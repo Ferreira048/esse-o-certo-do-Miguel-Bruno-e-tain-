@@ -1,0 +1,1 @@
+import{c as e,s as t}from"./index-BqQ3ziRd.js";var n=e(),r=()=>(0,n.jsxs)(`div`,{className:`p-10 text-center`,children:[`Anúncio não encontrado. `,(0,n.jsx)(t,{to:`/`,className:`text-primary underline`,children:`Voltar`})]});export{r as notFoundComponent};

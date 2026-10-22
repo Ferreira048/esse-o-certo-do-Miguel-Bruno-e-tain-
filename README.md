@@ -43,7 +43,13 @@ A pasta `site-pronto/` tem o site já montado, em arquivos comuns.
 2. No VS Code: **File → Open Folder** e escolha a pasta extraída.
 3. Clique em **Go Live** (canto inferior direito). O site abre no navegador.
 
-Também funciona dando dois cliques em `site-pronto/index.html`. Nessa versão os botões de mensagem, galeria e simulação não reagem; o site completo roda com `npm run dev`.
+Também funciona dando dois cliques em `site-pronto/index.html`. Os botões funcionam pelo arquivo `site-pronto/script.js` (JavaScript puro).
+
+## Onde está cada parte
+
+- **Front-end:** `src/routes/` (páginas), `src/components/` e `src/styles.css`.
+- **JavaScript puro (Go Live):** `scripts/site-pronto/script.js` — galeria, simulação, telefone e envio da mensagem.
+- **Back-end:** `src/lib/interesses.functions.ts` — recebe a mensagem de interesse e grava no banco de dados (tabela `interesses`).
 As fotos já vêm na pasta; só a fonte do texto vem da internet.
 
 ## Built with

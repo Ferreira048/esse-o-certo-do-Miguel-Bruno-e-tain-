@@ -1,6 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
+import { enviarInteresse } from "@/lib/interesses.functions";
 import { ChevronLeft, ChevronRight, Heart, Share2, MapPin, ShieldCheck, Flag, MessageCircle, Phone, User } from "lucide-react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { Button } from "@/components/ui/button";
@@ -55,14 +56,14 @@ function ListingPage() {
           <div className="space-y-6">
             <div className="overflow-hidden rounded-xl bg-ink shadow-card">
               <div className="relative">
-                <img src={l.images[img]} alt={l.title} width={1280} height={832} className="aspect-[16/10] w-full object-contain" />
-                <button aria-label="Foto anterior" onClick={() => setImg((img - 1 + n) % n)} className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full bg-card/90 p-2 text-foreground transition hover:scale-110"><ChevronLeft /></button>
-                <button aria-label="Próxima foto" onClick={() => setImg((img + 1) % n)} className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full bg-card/90 p-2 text-foreground transition hover:scale-110"><ChevronRight /></button>
-                <span className="absolute bottom-3 right-3 rounded-full bg-ink/80 px-3 py-1 text-xs text-ink-foreground">{img + 1} / {n}</span>
+                <img data-foto src={l.images[img]} alt={l.title} width={1280} height={832} className="aspect-[16/10] w-full object-contain" />
+                <button data-foto-anterior aria-label="Foto anterior" onClick={() => setImg((img - 1 + n) % n)} className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full bg-card/90 p-2 text-foreground transition hover:scale-110"><ChevronLeft /></button>
+                <button data-foto-proxima aria-label="Próxima foto" onClick={() => setImg((img + 1) % n)} className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full bg-card/90 p-2 text-foreground transition hover:scale-110"><ChevronRight /></button>
+                <span data-foto-numero className="absolute bottom-3 right-3 rounded-full bg-ink/80 px-3 py-1 text-xs text-ink-foreground">{img + 1} / {n}</span>
               </div>
               <div className="flex gap-2 p-3">
                 {l.images.map((src, i) => (
-                  <button key={i} onClick={() => setImg(i)} className={`overflow-hidden rounded-md border-2 transition ${i === img ? "border-primary" : "border-transparent opacity-60 hover:opacity-100"}`}>
+                  <button key={i} data-miniatura={src} onClick={() => setImg(i)} className={`overflow-hidden rounded-md border-2 transition ${i === img ? "border-primary" : "border-transparent opacity-60 hover:opacity-100"}`}>
                     <img src={src} alt="" loading="lazy" width={1280} height={832} className="h-16 w-24 object-cover" />
                   </button>
                 ))}
@@ -110,26 +111,26 @@ function ListingPage() {
               <p className="text-xs text-muted-foreground">Valor estimado, apenas referência. Taxa de 1,89% a.m.</p>
               <div className="mt-4 grid gap-4 sm:grid-cols-2">
                 <label className="text-sm">Entrada
-                  <Input type="number" value={down} min={0} max={l.price} onChange={(e) => setDown(Number(e.target.value))} className="mt-1" />
+                  <Input data-entrada data-preco={l.price} type="number" value={down} min={0} max={l.price} onChange={(e) => setDown(Number(e.target.value))} className="mt-1" />
                 </label>
                 <label className="text-sm">Parcelas
                   <div className="mt-1 flex gap-2">
                     {[24, 36, 48, 60].map((m) => (
-                      <Button key={m} type="button" size="sm" variant={months === m ? "default" : "outline"} onClick={() => setMonths(m)}>{m}x</Button>
+                      <Button key={m} data-meses={m} type="button" size="sm" variant={months === m ? "default" : "outline"} onClick={() => setMonths(m)}>{m}x</Button>
                     ))}
                   </div>
                 </label>
               </div>
-              <p className="mt-4 text-sm">{months}x de <span className="text-xl font-extrabold text-primary">{brl(installment)}</span></p>
+              <p className="mt-4 text-sm"><span data-meses-texto>{months}</span>x de <span data-parcela className="text-xl font-extrabold text-primary">{brl(installment)}</span></p>
             </section>
           </div>
 
           <aside className="space-y-4 lg:sticky lg:top-20 lg:self-start">
             <div className="rounded-xl bg-card p-6 shadow-card">
               <p className="hidden text-3xl font-extrabold lg:block">{brl(l.price)}</p>
-              <p className="mt-2 text-xs text-muted-foreground">Contato demonstrativo; nenhuma mensagem será enviada.</p>
-              <ContactForm key={l.id} title={l.title} />
-              <Button variant="outline" className="mt-2 w-full" onClick={() => setShowPhone(true)}>
+              <p className="mt-2 text-xs text-muted-foreground">Sua mensagem fica registrada para o vendedor.</p>
+              <ContactForm key={l.id} id={l.id} title={l.title} />
+              <Button data-telefone variant="outline" className="mt-2 w-full" onClick={() => setShowPhone(true)}>
                 <Phone /> {showPhone ? "(11) 9XXXX-XX12 (exemplo)" : "Ver telefone"}
               </Button>
             </div>
@@ -179,18 +180,34 @@ function ListingPage() {
   );
 }
 
-function ContactForm({ title }: { title: string }) {
+function ContactForm({ id, title }: { id: string; title: string }) {
   const [sent, setSent] = useState(false);
-  if (sent) return <p className="mt-4 rounded-lg bg-muted p-4 text-sm font-medium">Simulação concluída. Nenhuma mensagem foi enviada.</p>;
+  const [sending, setSending] = useState(false);
+  if (sent) return <p className="mt-4 rounded-lg bg-muted p-4 text-sm font-medium">Mensagem enviada! Ela ficou registrada no sistema.</p>;
   return (
     <form
+      data-interesse
+      data-anuncio={id}
       className="mt-4 space-y-2"
-      onSubmit={(e) => { e.preventDefault(); setSent(true); toast("Contato demonstrativo concluído"); }}
+      onSubmit={async (e) => {
+        e.preventDefault();
+        const f = new FormData(e.currentTarget);
+        setSending(true);
+        try {
+          await enviarInteresse({ data: { anuncioId: id, nome: String(f.get("nome")), email: String(f.get("email")), mensagem: String(f.get("mensagem")) } });
+          setSent(true);
+          toast("Mensagem enviada");
+        } catch {
+          toast("Não foi possível enviar agora. Tente de novo.");
+        } finally {
+          setSending(false);
+        }
+      }}
     >
-      <Input required placeholder="Seu nome" />
-      <Input required type="email" placeholder="Seu e-mail" />
-      <Textarea required rows={3} defaultValue={`Olá! Tenho interesse no ${title}. Ainda está disponível?`} />
-      <Button type="submit" className="w-full font-bold"><MessageCircle /> Enviar mensagem</Button>
+      <Input required name="nome" maxLength={100} placeholder="Seu nome" />
+      <Input required name="email" type="email" maxLength={200} placeholder="Seu e-mail" />
+      <Textarea required name="mensagem" maxLength={1000} rows={3} defaultValue={`Olá! Tenho interesse no ${title}. Ainda está disponível?`} />
+      <Button type="submit" disabled={sending} className="w-full font-bold"><MessageCircle /> {sending ? "Enviando..." : "Enviar mensagem"}</Button>
     </form>
   );
 }

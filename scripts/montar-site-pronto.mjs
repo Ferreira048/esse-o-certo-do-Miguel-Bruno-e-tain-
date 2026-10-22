@@ -26,6 +26,12 @@ for (const f of fs.readdirSync("src/assets/catalogo")) {
   fs.writeFileSync(dest, Buffer.from(await res.arrayBuffer()));
 }
 
+// Plain front-end script (scripts/site-pronto/script.js) with the public database address.
+const env = Object.fromEntries(fs.readFileSync(".env", "utf8").split("\n")
+  .map((l) => l.match(/^(\w+)="?([^"]*)"?$/)).filter(Boolean).map((m) => [m[1], m[2]]));
+fs.writeFileSync(path.join(OUT, "script.js"), fs.readFileSync("scripts/site-pronto/script.js", "utf8")
+  .replace("__BANCO_URL__", env.VITE_SUPABASE_URL).replace("__BANCO_CHAVE__", env.VITE_SUPABASE_PUBLISHABLE_KEY));
+
 // Drop scripts (module scripts don't run from file://) and make every link relative.
 const walk = (d) => fs.readdirSync(d, { withFileTypes: true }).flatMap((e) =>
   e.isDirectory() ? walk(path.join(d, e.name)) : [path.join(d, e.name)]);
@@ -42,6 +48,7 @@ for (const file of walk(OUT).filter((f) => f.endsWith(".html"))) {
       const target = isPage ? `${clean ? clean.replace(/\/$/, "") + "/" : ""}index.html` : p;
       return `${attr}="${up}${target}"`;
     });
+  html = html.replace("</body>", `<script src="${up}script.js"></script></body>`);
   fs.writeFileSync(file, html);
 }
 console.log("site-pronto pronto");

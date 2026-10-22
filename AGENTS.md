@@ -13,3 +13,4 @@
 - Uploaded catalog photos use project-scoped asset pointers; do not embed the original archive scripts or duplicate the application framework.
 - Keep `.devcontainer/` and the dev-server host allowlist in vite.config.ts so the repo still opens as a browser-based VS Code with Node ready; people work on machines where installing software is not allowed.
 - `site-pronto/` is a script-free, relative-path prerendered copy rebuilt with `node scripts/montar-site-pronto.mjs` (static mode via `VITE_STATIC_COPY`); rebuild it after site changes, because course laptops can only open plain files, sometimes by double-click.
+- Interest messages go to the `interesses` table: the full site writes through the `enviarInteresse` server function, and `site-pronto/` writes from `scripts/site-pronto/script.js` with the public key (anon insert only, no reads), so both versions keep working without Node on the viewer's machine.
