@@ -43,7 +43,7 @@ A pasta `site-pronto/` tem o site já montado, em arquivos comuns.
 2. No VS Code: **File → Open Folder** e escolha a pasta extraída.
 3. Clique em **Go Live** (canto inferior direito). O site abre no navegador.
 
-Se aparecer só a lista de arquivos, abra diretamente a pasta `site-pronto` no VS Code e clique em Go Live de novo.
+Também funciona dando dois cliques em `site-pronto/index.html`. Nessa versão os botões de mensagem, galeria e simulação não reagem; o site completo roda com `npm run dev`.
 As fotos já vêm na pasta; só a fonte do texto vem da internet.
 
 ## Built with

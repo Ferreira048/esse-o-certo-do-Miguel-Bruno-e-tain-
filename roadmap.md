@@ -7,5 +7,5 @@
 - [x] Add a cloud VS Code setup (`.devcontainer/`, dev-server host allowlist, README steps).
 - [x] Get the site code into github.com/Ferreira048/esse-o-certo-do-Miguel-Bruno-e-tain- (91 files on commit `f9147ab2`; 102 paths verified, `package.json`/`README.md`/`listings.ts`/`onix.jpg` byte-identical to the project, no `node_modules`).
 - [x] Build a ready-made copy (`site-pronto/`) that opens with VS Code's Go Live, no Node needed.
-- [ ] Send the ready-made copy to the GitHub repo.
+- [x] Send the ready-made copy to the GitHub repo (commit `f19841d`).
 - [ ] Open the site in the browser VS Code. Blocked on: the user creating the cloud environment (GitHub → Code → Codespaces → New codespace).
