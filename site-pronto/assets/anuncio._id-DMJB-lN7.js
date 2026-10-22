@@ -1,0 +1,1 @@
+import{l as e,u as t}from"./index-Dc_YotMY.js";var n=t(),r=()=>(0,n.jsxs)(`div`,{className:`p-10 text-center`,children:[`Anúncio não encontrado. `,(0,n.jsx)(e,{to:`/`,className:`text-primary underline`,children:`Voltar`})]});export{r as notFoundComponent};

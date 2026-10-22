@@ -12,3 +12,4 @@
 - Keep the imported model catalog and existing used-car listings in one shared listing module with distinct IDs and a single detail route, so every interest link resolves consistently.
 - Uploaded catalog photos use project-scoped asset pointers; do not embed the original archive scripts or duplicate the application framework.
 - Keep `.devcontainer/` and the dev-server host allowlist in vite.config.ts so the repo still opens as a browser-based VS Code with Node ready; people work on machines where installing software is not allowed.
+- `site-pronto/` is a prerendered copy built with `vite.static.config.ts` (plus the catalog photos copied to their `/__l5e/...` paths) and served by Live Server via `.vscode/settings.json`; rebuild it after site changes, because course laptops can only open plain files.
